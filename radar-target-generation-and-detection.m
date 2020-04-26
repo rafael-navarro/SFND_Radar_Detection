@@ -8,13 +8,13 @@ clc;
 % Range Resolution = 1 m
 % Max Velocity = 100 m/s
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-c = 3e8    %Speed of light (m/s)
+c = 3e8;    %Speed of light (m/s)
 
-fc = 77e9   %frequency (Hz = 1/s)
-Rres = 1        %range resolution (m)
-Rmax = 200      %range max (m)
-Vmax = 70       %Max velocity (m/s)
-Vres = 3        %Velocity resolution (m/s)
+fc = 77e9;   %frequency (Hz = 1/s)
+Rres = 1;        %range resolution (m)
+Rmax = 200;      %range max (m)
+Vmax = 70;       %Max velocity (m/s)
+Vres = 3;        %Velocity resolution (m/s)
 
 lambda = c/fc;
 
@@ -33,14 +33,14 @@ velocity = 50;   % -70 - 70 (m/s)
 %Design the FMCW waveform by giving the specs of each of its parameters.
 % Calculate the Bandwidth (B), Chirp Time (Tchirp) and Slope (slope) of the FMCW
 % chirp using the requirements above.
-Bsweep = c / (2 * Rres) % (Hz)
+Bsweep = c / (2 * Rres); % (Hz)
 %Bsweep = range2bw(Rres, c);
 
 factor = 5.5;
-Tchirp = (factor * 2 * Rmax) / c    % (s)
+Tchirp = (factor * 2 * Rmax)/ c;    % (s)
 %Tchirp = factor*range2time(Rmax, c);
 
-slope = Bsweep / Tchirp 
+slope = Bsweep / Tchirp;
 
 
 %Operating carrier frequency of Radar 
@@ -71,28 +71,30 @@ td=zeros(1,length(t));
 
 %% Signal generation and Moving Target simulation
 % Running the radar scenario over the time. 
+L = length(t)
 
-for i=1:length(t)         
+for i=1:L        
     
     
     % *%TODO* :
     %For each time stamp update the Range of the Target for constant velocity. 
-    r_t(i) = inicial_range + t(i) * velocity
-    td(i) = 2 * r_t(i) / c 
+    r_t(i) = inicial_range + t(i) * velocity;
+    td(i) = 2 * r_t(i) / c;
     
     % *%TODO* :
     %For each time sample we need update the transmitted and
     %received signal. 
-    Tx(i) = 999
-    Rx (i)  = 999
+    Tx(i) = cos(2 * pi * (fc * t(i) + slope * t(i)^2 / 2));
+    Rx(i)  = cos(2 * pi * (fc * (t(i) - td(i)) + slope * (t(i) - td(i))^2 / 2));
     
     % *%TODO* :
     %Now by mixing the Transmit and Receive generate the beat signal
     %This is done by element wise matrix multiplication of Transmit and
     %Receiver Signal
-    Mix(i) = 999
+    Mix(i) = Tx(i) * Rx(i);
     
 end
+
 
 %% RANGE MEASUREMENT
 
@@ -100,18 +102,23 @@ end
  % *%TODO* :
 %reshape the vector into Nr*Nd array. Nr and Nd here would also define the size of
 %Range and Doppler FFT respectively.
+Mix = reshape(Mix, [Nr, Nd]);
+%plot(Mix(1:Nr));
 
  % *%TODO* :
 %run the FFT on the beat signal along the range bins dimension (Nr) and
 %normalize.
+signal_fft = fft(Mix, Nr);
 
  % *%TODO* :
 % Take the absolute value of FFT output
+signal_fft = abs(signal_fft);
+signal_fft = signal_fft / max(signal_fft)
 
  % *%TODO* :
 % Output of FFT is double sided signal, but we are interested in only one side of the spectrum.
 % Hence we throw out half of the samples.
-
+signal_fft = signal_fft(1:Nr/2)
 
 %plotting the range
 figure ('Name','Range from First FFT')
@@ -119,8 +126,8 @@ subplot(2,1,1)
 
  % *%TODO* :
  % plot FFT output 
+plot(signal_fft) 
 
- 
 axis ([0 200 0 1]);
 
 
