@@ -8,13 +8,23 @@ clc;
 % Range Resolution = 1 m
 % Max Velocity = 100 m/s
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
+c = 3e8    %Speed of light (m/s)
+
+fc = 77e9   %frequency (Hz = 1/s)
+Rres = 1        %range resolution (m)
+Rmax = 200      %range max (m)
+Vmax = 70       %Max velocity (m/s)
+Vres = 3        %Velocity resolution (m/s)
+
+lambda = c/fc;
 
 %speed of light = 3e8
 %% User Defined Range and Velocity of target
 % *%TODO* :
 % define the target's initial position and velocity. Note : Velocity
 % remains contant
- 
+inicial_range = 100;     % 0-200m
+velocity = 50;   % -70 - 70 (m/s) 
 
 
 %% FMCW Waveform Generation
@@ -23,6 +33,14 @@ clc;
 %Design the FMCW waveform by giving the specs of each of its parameters.
 % Calculate the Bandwidth (B), Chirp Time (Tchirp) and Slope (slope) of the FMCW
 % chirp using the requirements above.
+Bsweep = c / (2 * Rres) % (Hz)
+%Bsweep = range2bw(Rres, c);
+
+factor = 5.5;
+Tchirp = (factor * 2 * Rmax) / c    % (s)
+%Tchirp = factor*range2time(Rmax, c);
+
+slope = Bsweep / Tchirp 
 
 
 %Operating carrier frequency of Radar 
@@ -59,18 +77,20 @@ for i=1:length(t)
     
     % *%TODO* :
     %For each time stamp update the Range of the Target for constant velocity. 
+    r_t(i) = inicial_range + t(i) * velocity
+    td(i) = 2 * r_t(i) / c 
     
     % *%TODO* :
     %For each time sample we need update the transmitted and
     %received signal. 
-    Tx(i) = 
-    Rx (i)  =
+    Tx(i) = 999
+    Rx (i)  = 999
     
     % *%TODO* :
     %Now by mixing the Transmit and Receive generate the beat signal
     %This is done by element wise matrix multiplication of Transmit and
     %Receiver Signal
-    Mix(i) = 
+    Mix(i) = 999
     
 end
 
