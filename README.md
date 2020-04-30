@@ -24,7 +24,7 @@
     >end
     >```
 
-* For every iteration sum the signal level within all the training cells. To sum convert the value from logarithmic to linear using db2pow function. Values are previously converted to linear scale fro efficiency.
+* For every iteration sum the signal level within all the training cells. To sum convert the value from logarithmic to linear using db2pow function. Values are previously converted to linear scale for efficiency.
     
     >``` 
     >subm =  RDM2(i:i+2*Gd+2*Td, j:j+2*Gr+2*Tr); 
